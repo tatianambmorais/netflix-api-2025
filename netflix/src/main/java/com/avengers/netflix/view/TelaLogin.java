@@ -1,17 +1,20 @@
 package com.avengers.netflix.view;
 
 import com.avengers.netflix.model.Usuario;
+import com.avengers.netflix.repository.UsuarioRepository;
 import com.avengers.netflix.utils.CriptografiaUtils;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.Scanner;
 
+@Component
 public class TelaLogin {
-    private final Map<String, Usuario> repositorio;
+private final UsuarioRepository usuarioRepository;
     private final Scanner scanner=new Scanner(System.in);
 
-    public TelaLogin(Map<String,Usuario> repositorio){
-        this.repositorio=repositorio;
+    public TelaLogin(UsuarioRepository usuarioRepository){
+        this.usuarioRepository = usuarioRepository;
     }
 
     public void mostrar(){
@@ -20,7 +23,7 @@ public class TelaLogin {
         String email=scanner.nextLine().trim();
         System.out.print("Senha: ");
         String senha=scanner.nextLine().trim();
-        Usuario u=repositorio.get(email);
+        Usuario u=usuarioRepository.findByEmail(email);
         if(u==null){
             System.out.println("Credenciais inválidas.");
             return;

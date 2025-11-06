@@ -1,63 +1,47 @@
 package com.avengers.netflix.view;
-import com.avengers.netflix.model.Usuario;
-import com.avengers.netflix.service.EmailService;
-import com.avengers.netflix.utils.CriptografiaUtils;
+
+
+import com.avengers.netflix.service.UsuarioService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Scanner;
 import java.time.LocalDate;
-import java.util.UUID;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
+@Component
 public class TelaCadastro {
-    private final Scanner scanner=new Scanner(System.in);
-    private final EmailService emailService=new EmailService();
-    private final Map<String, Usuario> repositorio;
-    private final Map<String,String> tokens;
+    private final Scanner scanner = new Scanner(System.in);
+    private final UsuarioService usuarioService;
 
-    public TelaCadastro(Map<String,Usuario> repositorio, Map<String,String> tokens){
-        this.repositorio=repositorio;
-        this.tokens=tokens;
+    @Autowired
+    public TelaCadastro(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
     }
 
     public void mostrar(){
         System.out.println("=== Cadastro Backendflix ===");
-        Usuario u=new Usuario();
         System.out.print("Nome completo: ");
-        u.setNomeCompleto(scanner.nextLine().trim());
+        String nome = scanner.nextLine().trim();
         System.out.print("Data de nascimento (YYYY-MM-DD): ");
-        String data=scanner.nextLine().trim();
-        u.setDataNascimento(LocalDate.parse(data));
+        LocalDate dataNascimento= LocalDate.parse(scanner.nextLine());
         System.out.print("E-mail: ");
-        u.setEmail(scanner.nextLine().trim());
+        String email = scanner.nextLine().trim();
         System.out.print("Senha: ");
         String senha=scanner.nextLine().trim();
         System.out.print("Confirmar senha: ");
-        String confirma=scanner.nextLine().trim();
-        if(!senha.equals(confirma)){
-            System.out.println("Senhas não conferem.");
-            return;
-        }
-        u.setSenhaHash(CriptografiaUtils.sha256(senha));
+        String confirmaSenha=scanner.nextLine().trim();
         System.out.print("Número do cartão: ");
-        u.setNumeroCartao(scanner.nextLine().trim());
+       String numeroCartao = scanner.nextLine().trim();
         System.out.print("Validade do cartão (MM/AA): ");
-        u.setValidadeCartao(scanner.nextLine().trim());
+        String validadeCartao = scanner.nextLine().trim();
         System.out.print("Código de segurança: ");
-        u.setCodigoSeguranca(scanner.nextLine().trim());
+       String codSeguranca = scanner.nextLine().trim();
         System.out.print("Nome do titular: ");
-        u.setNomeTitular(scanner.nextLine().trim());
+       String nomeTitular = scanner.nextLine().trim();
         System.out.print("CPF/CNPJ: ");
-        u.setCpfCnpj(scanner.nextLine().trim());
-        u.setConfirmado(false);
-        if(repositorio.containsKey(u.getEmail())){
-            System.out.println("E-mail já cadastrado.");
-            return;
-        }
-        repositorio.put(u.getEmail(), u);
-        String token=UUID.randomUUID().toString();
-        tokens.put(token, u.getEmail());
-        emailService.enviarConfirmacao(u.getEmail(), token);
+        String cpfCnpj = scanner.nextLine().trim();       
+        usuarioService.cadastraUsuario(nome, dataNascimento,email, senha,confirmaSenha, numeroCartao, validadeCartao, codSeguranca, nomeTitular, cpfCnpj);
+
         System.out.println("Cadastro realizado. Verifique o e-mail (simulado).");
     }
 }
