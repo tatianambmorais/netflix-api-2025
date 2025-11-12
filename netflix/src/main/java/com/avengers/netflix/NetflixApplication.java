@@ -6,6 +6,8 @@ import com.avengers.netflix.service.UsuarioService;
 import com.avengers.netflix.view.TelaCadastro;
 import com.avengers.netflix.view.TelaConfirmacaoToken;
 import com.avengers.netflix.view.TelaLogin;
+import com.avengers.netflix.view.TelaCadastroMidia;
+import com.avengers.netflix.view.TelaAtualizaCartao;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -24,12 +26,16 @@ public class NetflixApplication {
 		TelaCadastro telaCadastro = context.getBean(TelaCadastro.class);
 		TelaLogin telaLogin = context.getBean(TelaLogin.class);
 		TelaConfirmacaoToken telaToken = context.getBean(TelaConfirmacaoToken.class);
-		Scanner scanner=new Scanner(System.in);
+		TelaCadastroMidia telaMidia = context.getBean(TelaCadastroMidia.class);
+        TelaAtualizaCartao telaAtualizaCartao = context.getBean(TelaAtualizaCartao.class);
+        Scanner scanner=new Scanner(System.in);
 		while(true){
 			System.out.println("=== Backendflix ===");
 			System.out.println("1 - Cadastrar");
 			System.out.println("2 - Confirmar conta");
 			System.out.println("3 - Login");
+			System.out.println("4 - Cadastrar Mídia");
+            System.out.println("5 - Atualizar Cartão");
 			System.out.println("0 - Sair");
 			System.out.print("Opção: ");
 			String op=scanner.nextLine().trim();
@@ -37,13 +43,19 @@ public class NetflixApplication {
 				telaCadastro.mostrar();
 				cadastraToken(scanner, telaToken);
 
-
 			} else if("2".equals(op)){
 				cadastraToken(scanner, telaToken);
 				telaLogin.mostrar();
 
 			} else if("3".equals(op)){
 				telaLogin.mostrar();
+
+			} else if("4".equals(op)){
+				telaMidia.mostrar();
+
+            } else if ("5".equals(op)) {
+                telaAtualizaCartao.mostrar();
+
 			} else if("0".equals(op)){
 				System.out.println("Saindo...");
 				break;

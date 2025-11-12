@@ -1,11 +1,9 @@
 package com.avengers.netflix.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import java.util.List;
 
 import java.time.LocalDate;
 
@@ -27,5 +25,8 @@ public class Usuario {
     private String cpfCnpj;
     private boolean confirmado;
     private String token;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cartao> cartoes;
 
 }
