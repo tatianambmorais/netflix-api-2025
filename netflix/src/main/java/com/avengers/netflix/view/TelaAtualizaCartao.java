@@ -1,51 +1,69 @@
 package com.avengers.netflix.view;
 
 import com.avengers.netflix.model.Cartao;
-import com.avengers.netflix.repository.CartaoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.avengers.netflix.model.Usuario;
+import com.avengers.netflix.service.CartaoService;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.Scanner;
 
 @Component
 public class TelaAtualizaCartao {
 
     private final Scanner scanner = new Scanner(System.in);
+    private final CartaoService cartaoService;
 
-    @Autowired
-    private CartaoRepository cartaoRepository;
+    public TelaAtualizaCartao(CartaoService cartaoService) {
+        this.cartaoService = cartaoService;
+    }
 
-    public void mostrar() {
+    public void mostrar(Usuario usuarioLogado) {
         System.out.println("=== Atualização de Cartão ===");
-        System.out.print("Digite o ID do cartão: ");
-        Long id = Long.parseLong(scanner.nextLine().trim());
-
-        Optional<Cartao> optCartao = cartaoRepository.findById(id);
-        if (optCartao.isEmpty()) {
-            System.out.println("Cartão não encontrado!");
+        
+        List<Cartao> cartoes = cartaoService.listarCartoesPorUsuario(usuarioLogado);
+        if (cartoes.isEmpty()) {
+            System.out.println("Você não possui cartões cadastrados!");
             return;
         }
 
-        Cartao cartao = optCartao.get();
+        System.out.println("Seus cartões:");
+        for (int i = 0; i < cartoes.size(); i++) {
+            Cartao c = cartoes.get(i);
+            String numeroMascarado = "**** **** **** " + (c.getNumero().length() >= 4 ? c.getNumero().substring(c.getNumero().length() - 4) : "****");
+            System.out.println((i + 1) + " - " + c.getNomeImpresso() + " (" + numeroMascarado + ")");
+        }
 
-        System.out.println("Cartão encontrado: " + cartao.getNomeImpresso());
+        System.out.print("Escolha o cartão (número): ");
+        int escolha = Integer.parseInt(scanner.nextLine().trim()) - 1;
+        
+        if (escolha < 0 || escolha >= cartoes.size()) {
+            System.out.println("Cartão inválido!");
+            return;
+        }
+
+        Cartao cartao = cartoes.get(escolha);
+        
+        if (!cartaoService.pertenceAoUsuario(cartao, usuarioLogado)) {
+            System.out.println("Acesso negado!");
+            return;
+        }
+
         System.out.println("--- Atualize os dados abaixo ---");
 
         System.out.print("Novo nome impresso: ");
-        cartao.setNomeImpresso(scanner.nextLine().trim());
+        String novoNome = scanner.nextLine().trim();
 
         System.out.print("Novo número: ");
-        cartao.setNumero(scanner.nextLine().trim());
+        String novoNumero = scanner.nextLine().trim();
 
         System.out.print("Nova validade (MM/AA): ");
-        cartao.setValidade(scanner.nextLine().trim());
+        String novaValidade = scanner.nextLine().trim();
 
         System.out.print("Novo CVV: ");
-        cartao.setCvv(scanner.nextLine().trim());
+        String novoCvv = scanner.nextLine().trim();
 
-        cartaoRepository.save(cartao);
-
+        cartaoService.atualizarCartao(cartao, novoNumero, novoNome, novaValidade, novoCvv);
         System.out.println("Cartão atualizado com sucesso!");
     }
 }
