@@ -32,4 +32,14 @@ public class CartaoService {
     public boolean pertenceAoUsuario(Cartao cartao, Usuario usuario) {
         return cartao.getUsuario().getId().equals(usuario.getId());
     }
+
+    public void cadastrarCartao(Usuario usuario, String numero, String nomeImpresso, String validade, String cvv) {
+        Cartao cartao = new Cartao();
+        cartao.setNumero(CriptografiaUtils.sha256(numero));
+        cartao.setNomeImpresso(nomeImpresso);
+        cartao.setValidade(validade);
+        cartao.setCvv(CriptografiaUtils.sha256(cvv));
+        cartao.setUsuario(usuario);
+        cartaoRepository.save(cartao);
+    }
 }

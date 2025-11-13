@@ -1,6 +1,8 @@
 package com.avengers.netflix.service;
 
+import com.avengers.netflix.model.Cartao;
 import com.avengers.netflix.model.Usuario;
+import com.avengers.netflix.repository.CartaoRepository;
 import com.avengers.netflix.repository.UsuarioRepository;
 import com.avengers.netflix.utils.CriptografiaUtils;
 import com.avengers.netflix.utils.TokenUtils;
@@ -14,11 +16,13 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final EmailService emailService;
+    private final CartaoRepository cartaoRepository;
 
 
-    public UsuarioService(UsuarioRepository usuarioRepository, EmailService emailService){
+    public UsuarioService(UsuarioRepository usuarioRepository, EmailService emailService, CartaoRepository cartaoRepository){
         this.usuarioRepository = usuarioRepository;
         this.emailService = emailService;
+        this.cartaoRepository = cartaoRepository;
     }
 
 
@@ -39,6 +43,16 @@ public class UsuarioService {
         usuario.setSenhaHash(confirmaSenha(senha, confirmaSenha));
         usuario.setToken(TokenUtils.generateToken());
         usuarioRepository.save(usuario);
+        
+        // Criar cartão na tabela separada
+        Cartao cartao = new Cartao();
+        cartao.setNumero(CriptografiaUtils.sha256(numeroCartao));
+        cartao.setNomeImpresso(nomeTitular);
+        cartao.setValidade(validadeCartao);
+        cartao.setCvv(CriptografiaUtils.sha256(codSeguranca));
+        cartao.setUsuario(usuario);
+        cartaoRepository.save(cartao);
+        
         emailService.enviar(usuario);
     }
 
