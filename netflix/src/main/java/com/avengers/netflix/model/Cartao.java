@@ -5,7 +5,7 @@ import lombok.*;
 
 
 @Entity
-@Table(name = "cartoes")
+@Table(name = "cartao")
 @Getter
 @Setter
 @NoArgsConstructor

@@ -25,10 +25,13 @@ public class UsuarioService {
         this.cartaoRepository = cartaoRepository;
     }
 
-
-    public void cadastraUsuario(String nome, LocalDate dataNascimento, String email, String senha, String confirmaSenha, String numeroCartao, String validadeCartao, String codSeguranca, String nomeTitular, String cpfCnpj){
+    public void cadastraUsuario(String nome, LocalDate dataNascimento, String email, String senha,
+                                String confirmaSenha, String numeroCartao, String validadeCartao,
+                                String codSeguranca, String nomeTitular, String cpfCnpj){
 
         verificaSeJaExiste(email);
+
+        String senhaCriptografada = confirmaSenha(senha, confirmaSenha);
 
         Usuario usuario = new Usuario();
         usuario.setNomeCompleto(nome);
@@ -40,33 +43,34 @@ public class UsuarioService {
         usuario.setCodigoSeguranca(codSeguranca);
         usuario.setNomeTitular(nomeTitular);
         usuario.setCpfCnpj(cpfCnpj);
-        usuario.setSenhaHash(confirmaSenha(senha, confirmaSenha));
+        usuario.setSenhaHash(senhaCriptografada);
         usuario.setToken(TokenUtils.generateToken());
+
         usuarioRepository.save(usuario);
-        
-        // Criar cartão na tabela separada
+
         Cartao cartao = new Cartao();
         cartao.setNumero(CriptografiaUtils.sha256(numeroCartao));
         cartao.setNomeImpresso(nomeTitular);
         cartao.setValidade(validadeCartao);
         cartao.setCvv(CriptografiaUtils.sha256(codSeguranca));
         cartao.setUsuario(usuario);
+
         cartaoRepository.save(cartao);
-        
+
         emailService.enviar(usuario);
     }
 
     private void verificaSeJaExiste(String email) {
-        Usuario u = usuarioRepository.findByEmail(email);
-        if (u != null) {
-            System.out.println("Usuário já cadastrado");
-        }
+        Usuario usuario = usuarioRepository.findByEmail(email);
 
+        if (usuario != null) {
+            throw new IllegalArgumentException("Usuária(o) já cadastrada(o) com este e-mail.");
+        }
     }
 
     private String confirmaSenha(String senha, String confirmaSenha) {
-        if(!senha.equals(confirmaSenha)){
-            System.out.println("Senhas não conferem.");
+        if (!senha.equals(confirmaSenha)) {
+            throw new IllegalArgumentException("As senhas não conferem.");
         }
         return criptografaSenha(senha);
     }
@@ -75,17 +79,19 @@ public class UsuarioService {
         return CriptografiaUtils.sha256(senha);
     }
 
-
     public void confirmaToken(String token, String email) {
         Usuario usuario = usuarioRepository.findByEmail(email);
 
-        if (token.equals(usuario.getToken())){
-            usuario.setConfirmado(true);
-            usuarioRepository.save(usuario);
-            System.out.println("Usuário confirmado. Pode proceder para o login");
+        if (usuario == null) {
+            throw new IllegalArgumentException("E-mail não encontrado.");
         }
-        else {
-            System.out.println("Token incorreto. Tente novamente");
+
+        if (!token.equals(usuario.getToken())) {
+            throw new IllegalArgumentException("Token incorreto. Tente novamente.");
         }
-    }
-}
+
+        usuario.setConfirmado(true);
+        usuarioRepository.save(usuario);
+
+        System.out.println("Usuário confirmado. Pode proceder para o login");
+    }}
