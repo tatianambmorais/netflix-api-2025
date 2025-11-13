@@ -17,7 +17,7 @@ private final UsuarioRepository usuarioRepository;
         this.usuarioRepository = usuarioRepository;
     }
 
-    public void mostrar(){
+    public Usuario mostrar(){
         System.out.println("=== Login Backendflix ===");
         System.out.print("E-mail: ");
         String email=scanner.nextLine().trim();
@@ -26,17 +26,18 @@ private final UsuarioRepository usuarioRepository;
         Usuario u=usuarioRepository.findByEmail(email);
         if(u==null){
             System.out.println("Credenciais inválidas.");
-            return;
+            return null;
         }
         if(!u.isConfirmado()){
             System.out.println("Conta não confirmada. Verifique seu e-mail.");
-            return;
+            return null;
         }
         String hash= CriptografiaUtils.sha256(senha);
         if(!hash.equals(u.getSenhaHash())){
             System.out.println("Credenciais inválidas.");
-            return;
+            return null;
         }
         System.out.println("Login realizado. Bem-vindo, " + u.getNomeCompleto());
+        return u;
     }
 }
