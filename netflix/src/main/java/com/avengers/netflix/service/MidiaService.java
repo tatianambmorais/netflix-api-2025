@@ -6,6 +6,7 @@ import com.avengers.netflix.repository.FilmeRepository;
 import com.avengers.netflix.repository.SerieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.avengers.netflix.model.Midia;
 
 import java.util.List;
 
@@ -24,35 +25,35 @@ public class MidiaService {
 	public void cadastrarMidia(String tipo, String titulo, String genero, String relevancia,
 							   String sinopse, int duracao, int ano, String trailer) {
 
-		if (tipo.equals("F")) {
-			Filme filme = new Filme();
-			filme.setTitulo(titulo);
-			filme.setGenero(genero);
-			filme.setRelevancia(relevancia);
-			filme.setSinopse(sinopse);
-			filme.setDuracao(duracao);
-			filme.setAno(ano);
-			try {
-				filme.setTrailer(trailer);
-			} catch (Exception e) {
-				System.out.println("URL inválida! Trailer não será salvo.");
-			}
-			filmeRepository.save(filme);
-		}
-		else if (tipo.equals("S")) {
-			Serie serie = new Serie();
-			serie.setTitulo(titulo);
-			serie.setGenero(genero);
-			serie.setRelevancia(relevancia);
-			serie.setSinopse(sinopse);
-			serie.setDuracao(duracao);
-			serie.setAno(ano);
-			serie.setTrailer(trailer);
-			serieRepository.save(serie);
-		}
-		else {
-			System.out.println("Tipo inválido! Use 'F' para Filme ou 'S' para Série.");
-		}
+        if (tipo.equals("F")) {
+            Filme filme = new Filme();
+            filme.setTitulo(titulo);
+            filme.setGenero(genero);
+            filme.setRelevancia(relevancia);
+            filme.setSinopse(sinopse);
+            filme.setDuracao(duracao);
+            filme.setAno(ano);
+            try {
+                filme.setTrailer(trailer);
+            } catch (Exception e) {
+                System.out.println("URL inválida! Trailer não será salvo.");
+            }
+            filmeRepository.save(filme);
+        }
+        else if (tipo.equals("S")) {
+            Serie serie = new Serie();
+            serie.setTitulo(titulo);
+            serie.setGenero(genero);
+            serie.setRelevancia(relevancia);
+            serie.setSinopse(sinopse);
+            serie.setDuracao(duracao);
+            serie.setAno(ano);
+            serie.setTrailer(trailer);
+            serieRepository.save(serie);
+        }
+        else {
+            System.out.println("Tipo inválido! Use 'F' para Filme ou 'S' para Série.");
+        }
 	}
 
 	public void exibirDetalhesFilme(String titulo) {
@@ -89,28 +90,40 @@ public class MidiaService {
 		}
 	}
 
-	public void listarFilmes() {
-		List<Filme> filmes = filmeRepository.findAll();
-		if (filmes.isEmpty()) {
-			System.out.println("Nenhum filme cadastrado.");
-		} else {
-			System.out.println("\n=== FILMES DISPONÍVEIS ===");
-			for (Filme filme : filmes) {
-				System.out.println("- " + filme.getTitulo() + " (" + filme.getAno() + ")");
-			}
-		}
-	}
+    public List<Filme> listarFilmes() {
+        return filmeRepository.findAll();
+    }
 
-	public void listarSeries() {
-		List<Serie> series = serieRepository.findAll();
-		if (series.isEmpty()) {
-			System.out.println("Nenhuma série cadastrada.");
-		} else {
-			System.out.println("\n=== SÉRIES DISPONÍVEIS ===");
-			for (Serie serie : series) {
-				System.out.println("- " + serie.getTitulo() + " (" + serie.getAno() + ")");
-			}
-		}
-	}
+    public List<Serie> listarSeries() {
+        return serieRepository.findAll();
+    }
+
+    public Filme buscarFilmePorTitulo(String titulo) {
+        Filme filme = filmeRepository.findByTitulo(titulo);
+        if (filme == null) {
+            throw new IllegalArgumentException("Filme '" + titulo + "' não encontrado!");
+        }
+        return filme;
+    }
+    public Serie buscarSeriePorTitulo(String titulo) {
+        Serie serie = serieRepository.findByTitulo(titulo);
+        if (serie == null) {
+            throw new IllegalArgumentException("Série '" + titulo + "' não encontrada!");
+        }
+        return serie;
+    }
+
+    public Midia buscarPorId(Long id) {
+        return filmeRepository.findById(id)
+                .<Midia>map(filme -> filme)
+                .orElseGet(() ->
+                        serieRepository.findById(id)
+                                .<Midia>map(serie -> serie)
+                                .orElseThrow(() ->
+                                        new IllegalArgumentException("Mídia (Filme ou Série) com ID " + id + " não encontrada.")
+                                )
+                );
+    }
 }
+
 

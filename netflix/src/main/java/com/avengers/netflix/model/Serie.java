@@ -1,16 +1,15 @@
 package com.avengers.netflix.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
 import lombok.*;
 
+@Entity
 @Getter
 @Setter
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Serie extends Midia {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
 	private int temporadas;
 	private int episodios;
 }

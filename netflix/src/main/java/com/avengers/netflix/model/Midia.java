@@ -6,7 +6,12 @@ import lombok.*;
 @Getter
 @Setter
 @MappedSuperclass
+@NoArgsConstructor
+@AllArgsConstructor
 public abstract class Midia {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String titulo;
     private String genero;
     private String relevancia;
@@ -15,4 +20,6 @@ public abstract class Midia {
     private int duracao;
     private int ano;
     private String trailer;
+
+
 }

@@ -1,8 +1,6 @@
 package com.avengers.netflix;
 
 import com.avengers.netflix.model.Usuario;
-import com.avengers.netflix.repository.UsuarioRepository;
-import com.avengers.netflix.service.UsuarioService;
 import com.avengers.netflix.view.TelaCadastro;
 import com.avengers.netflix.view.TelaConfirmacaoToken;
 import com.avengers.netflix.view.TelaLogin;
@@ -13,9 +11,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
-import java.util.Map;
+
 import java.util.Scanner;
-import java.util.concurrent.ConcurrentHashMap;
+
 
 @SpringBootApplication
 public class NetflixApplication {
@@ -65,7 +63,7 @@ public class NetflixApplication {
 				telaMidia.mostrar();
 
 			} else if("5".equals(op) && usuarioLogado != null){
-				telaVisualizacao.exibirMenu();
+				telaVisualizacao.exibirMenu(usuarioLogado.getEmail());
 
 			} else if ("6".equals(op) && usuarioLogado != null) {
 				telaAtualizaCartao.mostrar(usuarioLogado);
