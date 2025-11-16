@@ -1,6 +1,5 @@
 package com.avengers.netflix.view;
 
-import com.avengers.netflix.NetflixApplication;
 import com.avengers.netflix.model.*;
 import com.avengers.netflix.service.MidiaService;
 import com.avengers.netflix.service.UsuarioService;
