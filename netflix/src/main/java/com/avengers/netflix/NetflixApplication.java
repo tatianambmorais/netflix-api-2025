@@ -2,8 +2,6 @@ package com.avengers.netflix;
 
 import com.avengers.netflix.model.TipoUsuario;
 import com.avengers.netflix.model.Usuario;
-import com.avengers.netflix.repository.UsuarioRepository;
-import com.avengers.netflix.service.UsuarioService;
 import com.avengers.netflix.view.TelaCadastro;
 import com.avengers.netflix.view.TelaConfirmacaoToken;
 import com.avengers.netflix.view.TelaLogin;
@@ -68,7 +66,7 @@ public class NetflixApplication {
 				usuarioLogado = telaLogin.mostrar();
 
 			} else if("4".equals(op) && usuarioLogado != null){
-				telaVisualizacao.exibirMenu();
+				telaVisualizacao.exibirMenu(usuarioLogado);
 
 			} else if("5".equals(op) && usuarioLogado != null) {
 				if (usuarioLogado.getTipoUsuario().equals(TipoUsuario.ADMINISTRADOR)) {

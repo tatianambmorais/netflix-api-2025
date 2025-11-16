@@ -1,5 +1,6 @@
 package com.avengers.netflix.service;
 
+import com.avengers.netflix.model.*;
 import com.avengers.netflix.model.Cartao;
 import com.avengers.netflix.model.TipoUsuario;
 import com.avengers.netflix.model.Usuario;
@@ -8,8 +9,13 @@ import com.avengers.netflix.repository.UsuarioRepository;
 import com.avengers.netflix.utils.CriptografiaUtils;
 import com.avengers.netflix.utils.TokenUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -18,12 +24,14 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final EmailService emailService;
     private final CartaoRepository cartaoRepository;
+    private final MidiaService midiaService;
 
 
-    public UsuarioService(UsuarioRepository usuarioRepository, EmailService emailService, CartaoRepository cartaoRepository){
+    public UsuarioService(UsuarioRepository usuarioRepository, EmailService emailService, CartaoRepository cartaoRepository, MidiaService midiaService){
         this.usuarioRepository = usuarioRepository;
         this.emailService = emailService;
         this.cartaoRepository = cartaoRepository;
+        this.midiaService = midiaService;
     }
 
     public void cadastraUsuario(String nome, LocalDate dataNascimento, String email, String senha,
@@ -96,6 +104,47 @@ public class UsuarioService {
             throw new IllegalArgumentException("As senhas não conferem.");
         }
         return criptografaSenha(senha);
+    }
+
+    public Map<String, List<Midia>> listarFavoritosSeparados(String email) {
+        Usuario usuario = usuarioRepository.findByEmail(email);
+
+        if (usuario == null) {
+            throw new IllegalArgumentException("Usuário não encontrado.");
+        }
+
+        Map<String, List<Midia>> favoritosSeparados = new HashMap<>();
+
+        List<Midia> filmes = usuario.getFavoritos().stream()
+                .filter(midia -> midia instanceof Filme)
+                .collect(Collectors.toList());
+
+        List<Midia> series = usuario.getFavoritos().stream()
+                .filter(midia -> midia instanceof Serie)
+                .collect(Collectors.toList());
+
+        favoritosSeparados.put("filmes", filmes);
+        favoritosSeparados.put("series", series);
+
+        return favoritosSeparados;
+    }
+
+    @Transactional
+    public Usuario adicionarOuRemoverFavorito(String email, Long midiaId) {
+        Usuario usuario = usuarioRepository.findByEmail(email);
+
+        if (usuario == null) {
+            throw new IllegalArgumentException("Usuário não encontrado.");
+        }
+
+        Midia midia = midiaService.buscarPorId(midiaId);
+        if (usuario.getFavoritos().contains(midia)) {
+            usuario.getFavoritos().remove(midia);
+        } else {
+            usuario.getFavoritos().add(midia);
+        }
+
+        return usuarioRepository.save(usuario);
     }
 
     private String criptografaSenha(String senha) {

@@ -2,7 +2,6 @@ package com.avengers.netflix.view;
 
 
 import com.avengers.netflix.service.UsuarioService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Scanner;
@@ -13,7 +12,6 @@ public class TelaCadastro {
     private final Scanner scanner = new Scanner(System.in);
     private final UsuarioService usuarioService;
 
-    @Autowired
     public TelaCadastro(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }

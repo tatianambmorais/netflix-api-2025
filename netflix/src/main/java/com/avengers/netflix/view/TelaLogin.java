@@ -5,7 +5,6 @@ import com.avengers.netflix.repository.UsuarioRepository;
 import com.avengers.netflix.utils.CriptografiaUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
 import java.util.Scanner;
 
 @Component
