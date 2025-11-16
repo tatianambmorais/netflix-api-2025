@@ -12,9 +12,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
-import java.util.Map;
 import java.util.Scanner;
-import java.util.concurrent.ConcurrentHashMap;
 
 @SpringBootApplication
 public class NetflixApplication {
@@ -82,6 +80,7 @@ public class NetflixApplication {
 
 			} else if("0".equals(op)){
 				System.out.println("Saindo...");
+				usuarioLogado = null;
 				break;
 			} else {
 				System.out.println("Opção inválida ou acesso negado.");

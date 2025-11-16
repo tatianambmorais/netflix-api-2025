@@ -21,7 +21,7 @@ public class MidiaService {
 	}
 
 	public void cadastrarMidia(String tipo, String titulo, String genero, String relevancia,
-							   String sinopse, int duracao, int ano, String trailer) {
+							   String sinopse, Integer duracao, Integer ano, String trailer) {
 
         if (tipo.equals("F")) {
             Filme filme = new Filme();
@@ -31,6 +31,7 @@ public class MidiaService {
             filme.setSinopse(sinopse);
             filme.setDuracao(duracao);
             filme.setAno(ano);
+            filme.setTrailer(trailer);
             try {
                 filme.setTrailer(trailer);
             } catch (Exception e) {

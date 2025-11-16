@@ -31,10 +31,12 @@ public class TelaCadastroMidia {
         String sinopse = scanner.nextLine().trim();
 
         System.out.print("Duração (em minutos): ");
-        int duracao = Integer.parseInt(scanner.nextLine());
+        Integer duracao = scanner.nextInt();
+        scanner.nextLine();
 
         System.out.print("Ano de lançamento: ");
-        int ano = Integer.parseInt(scanner.nextLine());
+        Integer ano = scanner.nextInt();
+        scanner.nextLine();
 
         System.out.print("Trailer (URL): ");
         String trailer = scanner.nextLine().trim();
@@ -42,7 +44,6 @@ public class TelaCadastroMidia {
         System.out.print("Tipo (F para Filme / S para Série): ");
         String tipo = scanner.nextLine().trim().toUpperCase();
 
-        // Chama o service para salvar a mídia
         midiaService.cadastrarMidia(tipo, titulo, genero, relevancia, sinopse, duracao, ano, trailer);
 
         System.out.println("Mídia cadastrada com sucesso!");

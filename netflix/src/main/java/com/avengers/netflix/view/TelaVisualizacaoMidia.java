@@ -1,11 +1,9 @@
 package com.avengers.netflix.view;
 
-import com.avengers.netflix.model.Usuario;
+import com.avengers.netflix.NetflixApplication;
+import com.avengers.netflix.model.*;
 import com.avengers.netflix.service.MidiaService;
 import com.avengers.netflix.service.UsuarioService;
-import com.avengers.netflix.model.Filme;
-import com.avengers.netflix.model.Serie;
-import com.avengers.netflix.model.Midia;
 
 import org.springframework.stereotype.Component;
 
@@ -34,7 +32,10 @@ public class TelaVisualizacaoMidia {
 			System.out.println("2 - Listar Séries");
 			System.out.println("3 - Ver Detalhes de Filme");
 			System.out.println("4 - Ver Detalhes de Série");
-            System.out.println("5 - Ver Favoritos");
+            if (usuario.getTipoUsuario() == TipoUsuario.CLIENTE) {
+                System.out.println("5 - Ver Favoritos");
+
+            }
 			System.out.println("0 - Voltar");
 			System.out.print("Escolha uma opção: ");
 			opcao = scanner.nextLine();
@@ -49,27 +50,23 @@ public class TelaVisualizacaoMidia {
 				case "3":
 					System.out.print("Digite o título do filme: ");
 					titulo = scanner.nextLine();
-                    exibirDetalhesEGerenciarFavorito(titulo, "F", usuario.getEmail());
+                    exibirDetalhesEGerenciarFavorito(titulo, "F", usuario);
                     break;
 				case "4":
 					System.out.print("Digite o título da série: ");
 					titulo= scanner.nextLine();
-                    exibirDetalhesEGerenciarFavorito(titulo, "S", usuario.getEmail());
+                    exibirDetalhesEGerenciarFavorito(titulo, "S", usuario);
 					break;
                 case "5":
                     TelaFavorito telaFavorito = new TelaFavorito(usuarioService);
                     telaFavorito.exibirLista(usuario.getEmail());
                     break;
-				case "0":
-					System.out.println("Voltando ao menu principal...");
-					break;
 				default:
 					System.out.println("Opção inválida!");
 			}
 		} while (!"0".equals(opcao));
-        scanner.close();
 	}
-    private void exibirDetalhesEGerenciarFavorito(String titulo, String tipo, String emailUsuario) {
+    private void exibirDetalhesEGerenciarFavorito(String titulo, String tipo, Usuario usuario) {
         Scanner scanner = new Scanner(System.in);
 
         try {
@@ -107,24 +104,25 @@ public class TelaVisualizacaoMidia {
             }
 
             System.out.println("\n-------------------------------------------");
-            System.out.println("1. Adicionar/Remover dos Favoritos");
+            if (usuario.getTipoUsuario() == TipoUsuario.CLIENTE) {
+                System.out.println("1. Adicionar/Remover dos Favoritos");
+            }
             System.out.println("0. Voltar");
             System.out.print("Escolha uma opção: ");
             String escolha = scanner.nextLine();
 
             if (escolha.equals("1")) {
-                adicionarOuRemover(emailUsuario, midia.getId());
+                adicionarOuRemover(usuario, midia.getId());
             }
 
         } catch (IllegalArgumentException e) {
             System.err.println("ERRO: " + e.getMessage());
         }
-        scanner.close();
     }
 
-    private void adicionarOuRemover(String emailUsuarioLogado, Long midiaId) {
+    private void adicionarOuRemover(Usuario usuario, Long midiaId) {
         try {
-            usuarioService.adicionarOuRemoverFavorito(emailUsuarioLogado, midiaId);
+            usuarioService.adicionarOuRemoverFavorito(usuario.getEmail(), midiaId);
             System.out.println("Status: Favoritos atualizados para a Mídia ID " + midiaId + ".");
         } catch (IllegalArgumentException e) {
             System.err.println("ERRO: " + e.getMessage());
