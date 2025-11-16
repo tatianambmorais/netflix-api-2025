@@ -34,7 +34,7 @@ public class Usuario {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "usuario_favoritos", // Nome da tabela de ligação
+            name = "usuario_favoritos",
             joinColumns = @JoinColumn(name = "usuario_id"),
             inverseJoinColumns = @JoinColumn(name = "midia_id")
     )
