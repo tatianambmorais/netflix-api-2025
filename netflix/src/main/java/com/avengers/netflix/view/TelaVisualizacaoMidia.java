@@ -111,7 +111,7 @@ public class TelaVisualizacaoMidia {
             String escolha = scanner.nextLine();
 
             if (escolha.equals("1")) {
-                adicionarOuRemover(emailUsuario, midia.getId);
+                adicionarOuRemover(emailUsuario, midia.getId());
             }
 
         } catch (IllegalArgumentException e) {

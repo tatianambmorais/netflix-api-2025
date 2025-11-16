@@ -32,12 +32,13 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cartao> cartoes;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "usuario_favoritos", // Nome da tabela de ligação
             joinColumns = @JoinColumn(name = "usuario_id"),
             inverseJoinColumns = @JoinColumn(name = "midia_id")
     )
+
     private Set<Midia> favoritos = new HashSet<>();
 
 }

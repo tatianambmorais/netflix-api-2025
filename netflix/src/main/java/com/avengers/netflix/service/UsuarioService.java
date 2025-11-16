@@ -6,6 +6,8 @@ import com.avengers.netflix.repository.UsuarioRepository;
 import com.avengers.netflix.utils.CriptografiaUtils;
 import com.avengers.netflix.utils.TokenUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -102,6 +104,7 @@ public class UsuarioService {
         return favoritosSeparados;
     }
 
+    @Transactional
     public Usuario adicionarOuRemoverFavorito(String email, Long midiaId) {
         Usuario usuario = usuarioRepository.findByEmail(email);
 
