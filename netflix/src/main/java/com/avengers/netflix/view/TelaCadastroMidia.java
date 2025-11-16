@@ -1,7 +1,6 @@
 package com.avengers.netflix.view;
 
 import com.avengers.netflix.service.MidiaService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Scanner;
@@ -12,12 +11,11 @@ public class TelaCadastroMidia {
     private final Scanner scanner = new Scanner(System.in);
     private final MidiaService midiaService;
 
-    @Autowired
     public TelaCadastroMidia(MidiaService midiaService) {
         this.midiaService = midiaService;
     }
 
-    public void mostrar() {
+    public void cadastrar() {
         System.out.println("=== Cadastro de Mídia ===");
 
         System.out.print("Título: ");

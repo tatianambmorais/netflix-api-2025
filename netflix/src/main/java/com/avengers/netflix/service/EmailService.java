@@ -3,12 +3,10 @@ package com.avengers.netflix.service;
 import com.avengers.netflix.model.Usuario;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 
 @Service
 public class EmailService {

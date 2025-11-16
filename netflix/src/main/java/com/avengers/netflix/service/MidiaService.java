@@ -4,7 +4,6 @@ import com.avengers.netflix.model.Filme;
 import com.avengers.netflix.model.Serie;
 import com.avengers.netflix.repository.FilmeRepository;
 import com.avengers.netflix.repository.SerieRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.avengers.netflix.model.Midia;
 
@@ -16,7 +15,6 @@ public class MidiaService {
 	private final FilmeRepository filmeRepository;
 	private final SerieRepository serieRepository;
 
-	@Autowired
 	public MidiaService(FilmeRepository filmeRepository, SerieRepository serieRepository) {
 		this.filmeRepository = filmeRepository;
 		this.serieRepository = serieRepository;

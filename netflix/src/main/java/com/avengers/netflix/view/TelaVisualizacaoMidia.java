@@ -1,5 +1,6 @@
 package com.avengers.netflix.view;
 
+import com.avengers.netflix.model.Usuario;
 import com.avengers.netflix.service.MidiaService;
 import com.avengers.netflix.service.UsuarioService;
 import com.avengers.netflix.model.Filme;
@@ -22,7 +23,7 @@ public class TelaVisualizacaoMidia {
         this.usuarioService = usuarioService;
     }
 
-	public void exibirMenu(String emailUsuario) {
+	public void exibirMenu(Usuario usuario) {
         Scanner scanner = new Scanner(System.in);
         String opcao;
         String titulo;
@@ -48,16 +49,16 @@ public class TelaVisualizacaoMidia {
 				case "3":
 					System.out.print("Digite o título do filme: ");
 					titulo = scanner.nextLine();
-                    exibirDetalhesEGerenciarFavorito(titulo, "F", emailUsuario);
+                    exibirDetalhesEGerenciarFavorito(titulo, "F", usuario.getEmail());
                     break;
 				case "4":
 					System.out.print("Digite o título da série: ");
 					titulo= scanner.nextLine();
-                    exibirDetalhesEGerenciarFavorito(titulo, "S", emailUsuario);
+                    exibirDetalhesEGerenciarFavorito(titulo, "S", usuario.getEmail());
 					break;
                 case "5":
                     TelaFavorito telaFavorito = new TelaFavorito(usuarioService);
-                    telaFavorito.exibirLista(emailUsuario);
+                    telaFavorito.exibirLista(usuario.getEmail());
                     break;
 				case "0":
 					System.out.println("Voltando ao menu principal...");
@@ -66,6 +67,7 @@ public class TelaVisualizacaoMidia {
 					System.out.println("Opção inválida!");
 			}
 		} while (!"0".equals(opcao));
+        scanner.close();
 	}
     private void exibirDetalhesEGerenciarFavorito(String titulo, String tipo, String emailUsuario) {
         Scanner scanner = new Scanner(System.in);
@@ -117,6 +119,7 @@ public class TelaVisualizacaoMidia {
         } catch (IllegalArgumentException e) {
             System.err.println("ERRO: " + e.getMessage());
         }
+        scanner.close();
     }
 
     private void adicionarOuRemover(String emailUsuarioLogado, Long midiaId) {

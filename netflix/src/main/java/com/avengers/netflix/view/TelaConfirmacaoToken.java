@@ -1,6 +1,5 @@
 package com.avengers.netflix.view;
 
-import com.avengers.netflix.model.Usuario;
 import com.avengers.netflix.service.UsuarioService;
 import org.springframework.stereotype.Component;
 
