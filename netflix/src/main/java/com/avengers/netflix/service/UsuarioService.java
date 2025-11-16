@@ -1,6 +1,7 @@
 package com.avengers.netflix.service;
 
 import com.avengers.netflix.model.Cartao;
+import com.avengers.netflix.model.TipoUsuario;
 import com.avengers.netflix.model.Usuario;
 import com.avengers.netflix.repository.CartaoRepository;
 import com.avengers.netflix.repository.UsuarioRepository;
@@ -34,17 +35,12 @@ public class UsuarioService {
         String senhaCriptografada = confirmaSenha(senha, confirmaSenha);
 
         Usuario usuario = new Usuario();
-        usuario.setNomeCompleto(nome);
-        usuario.setDataNascimento(dataNascimento);
-        usuario.setEmail(email);
-        usuario.setConfirmado(false);
+        cadastraUsuarioDadosComuns(nome, dataNascimento, email, cpfCnpj, usuario, senhaCriptografada);
         usuario.setNumeroCartao(numeroCartao);
         usuario.setValidadeCartao(validadeCartao);
         usuario.setCodigoSeguranca(codSeguranca);
         usuario.setNomeTitular(nomeTitular);
-        usuario.setCpfCnpj(cpfCnpj);
-        usuario.setSenhaHash(senhaCriptografada);
-        usuario.setToken(TokenUtils.generateToken());
+        usuario.setTipoUsuario(TipoUsuario.CLIENTE);
 
         usuarioRepository.save(usuario);
 
@@ -58,6 +54,33 @@ public class UsuarioService {
         cartaoRepository.save(cartao);
 
         emailService.enviar(usuario);
+    }
+
+    public void cadastraAdm(String nome, LocalDate dataNascimento, String email, String senha,
+                            String confirmaSenha, String cpfCnpj){
+
+        verificaSeJaExiste(email);
+
+        String senhaCriptografada = confirmaSenha(senha, confirmaSenha);
+
+        Usuario usuario = new Usuario();
+        cadastraUsuarioDadosComuns(nome, dataNascimento, email, cpfCnpj, usuario, senhaCriptografada);
+        usuario.setTipoUsuario(TipoUsuario.ADMINISTRADOR);
+
+        usuarioRepository.save(usuario);
+        emailService.enviar(usuario);
+    }
+
+    private static void cadastraUsuarioDadosComuns(String nome, LocalDate dataNascimento, String email, String cpfCnpj, Usuario usuario, String senhaCriptografada) {
+        usuario.setNomeCompleto(nome);
+        usuario.setDataNascimento(dataNascimento);
+        usuario.setEmail(email);
+        usuario.setSenhaHash(senhaCriptografada);
+        usuario.setCpfCnpj(cpfCnpj);
+        usuario.setConfirmado(false);
+        usuario.setToken(TokenUtils.generateToken());
+        usuario.setSenhaHash(senhaCriptografada);
+        usuario.setToken(TokenUtils.generateToken());
     }
 
     private void verificaSeJaExiste(String email) {
@@ -92,6 +115,5 @@ public class UsuarioService {
 
         usuario.setConfirmado(true);
         usuarioRepository.save(usuario);
-
         System.out.println("Usuário confirmado. Pode proceder para o login");
     }}

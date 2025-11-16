@@ -1,5 +1,6 @@
 package com.avengers.netflix;
 
+import com.avengers.netflix.model.TipoUsuario;
 import com.avengers.netflix.model.Usuario;
 import com.avengers.netflix.repository.UsuarioRepository;
 import com.avengers.netflix.service.UsuarioService;
@@ -35,17 +36,22 @@ public class NetflixApplication {
         Scanner scanner=new Scanner(System.in);
 		while(true){
 			System.out.println("=== Backendflix ===");
+			if (usuarioLogado == null) {
+				System.out.println("1 - Cadastrar");
+				System.out.println("2 - Confirmar conta");
+				System.out.println("3 - Login");
+			}
 			if(usuarioLogado != null) {
 				System.out.println("Logado como: " + usuarioLogado.getNomeCompleto());
-			}
-			System.out.println("1 - Cadastrar");
-			System.out.println("2 - Confirmar conta");
-			System.out.println("3 - Login");
-			if(usuarioLogado != null) {
-				System.out.println("4 - Cadastrar Mídia");
-				System.out.println("5 - Visualizar Mídia");
-				System.out.println("6 - Atualizar Cartão");
-				System.out.println("7 - Logout");
+				System.out.println("4 - Visualizar Mídia");
+				if (usuarioLogado.getTipoUsuario().equals(TipoUsuario.CLIENTE)) {
+					System.out.println("5 - Atualizar Cartão");
+					System.out.println("6 - Logout");
+				}
+				if (usuarioLogado.getTipoUsuario().equals(TipoUsuario.ADMINISTRADOR)){
+					System.out.println("5 - Cadastrar Mídia");
+					System.out.println("6 - Logout");
+				}
 			}
 			System.out.println("0 - Sair");
 			System.out.print("Opção: ");
@@ -62,15 +68,17 @@ public class NetflixApplication {
 				usuarioLogado = telaLogin.mostrar();
 
 			} else if("4".equals(op) && usuarioLogado != null){
-				telaMidia.mostrar();
-
-			} else if("5".equals(op) && usuarioLogado != null){
 				telaVisualizacao.exibirMenu();
 
-			} else if ("6".equals(op) && usuarioLogado != null) {
-				telaAtualizaCartao.mostrar(usuarioLogado);
+			} else if("5".equals(op) && usuarioLogado != null) {
+				if (usuarioLogado.getTipoUsuario().equals(TipoUsuario.ADMINISTRADOR)) {
+					telaMidia.cadastrar();
+				}
+				if (usuarioLogado.getTipoUsuario().equals(TipoUsuario.CLIENTE)) {
+					telaAtualizaCartao.mostrar(usuarioLogado);
+				}
 
-			} else if("7".equals(op) && usuarioLogado != null){
+			} else if("6".equals(op) && usuarioLogado != null){
 				usuarioLogado = null;
 				System.out.println("Logout realizado com sucesso!");
 

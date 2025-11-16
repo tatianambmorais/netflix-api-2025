@@ -17,7 +17,7 @@ public class TelaCadastroMidia {
         this.midiaService = midiaService;
     }
 
-    public void mostrar() {
+    public void cadastrar() {
         System.out.println("=== Cadastro de Mídia ===");
 
         System.out.print("Título: ");
