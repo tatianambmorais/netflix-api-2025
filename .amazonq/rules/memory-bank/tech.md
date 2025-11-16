@@ -1,42 +1,31 @@
-# Netflix API 2025 - Technology Stack
+# Netflix API - Technology Stack
 
 ## Programming Languages and Versions
 
 ### Primary Language
-- **Java 17**: Main programming language with modern features and LTS support
+- **Java 17**: Modern LTS version with enhanced features
 - **Maven**: Build automation and dependency management
 
-### Framework Versions
+### Framework and Libraries
 - **Spring Boot 3.5.7**: Main application framework
-- **Spring Framework**: Underlying dependency injection and application context
-- **Spring Data JPA**: Data persistence and repository abstraction
-- **Spring Web**: RESTful web services and MVC support
+- **Spring Data JPA**: Database abstraction and ORM
+- **Spring Web**: RESTful web services support
 - **Spring Security**: Authentication and authorization
 - **Spring Boot Mail**: Email service integration
 
-## Core Dependencies
+## Database Technology
+- **H2 Database**: In-memory database for development
+- **JPA/Hibernate**: Object-relational mapping
+- **Database Location**: `data/netflix.mv.db`
 
-### Database and Persistence
-- **H2 Database**: In-memory database for development and testing
-- **Hibernate**: JPA implementation for ORM
-- **Spring Data JPA**: Repository pattern implementation
+## Development Dependencies
+- **Lombok**: Code generation for boilerplate reduction
+- **Spring Boot Test**: Testing framework integration
+- **Maven Compiler Plugin**: Java compilation configuration
 
-### Security and Utilities
-- **Spring Security**: Comprehensive security framework
-- **Lombok**: Code generation for reducing boilerplate
-- **Custom Cryptography Utils**: Encryption and token management
+## Build System Configuration
 
-### Email Services
-- **Spring Boot Starter Mail**: Email functionality
-- **Mailtrap SMTP**: Development email testing service
-
-### Testing
-- **Spring Boot Test**: Testing framework with auto-configuration
-- **JUnit**: Unit testing framework (included with Spring Boot Test)
-
-## Build System and Configuration
-
-### Maven Configuration
+### Maven Configuration (pom.xml)
 ```xml
 <properties>
     <java.version>17</java.version>
@@ -45,68 +34,58 @@
 </properties>
 ```
 
-### Key Maven Plugins
-- **Maven Compiler Plugin**: Java compilation with Lombok annotation processing
-- **Spring Boot Maven Plugin**: Application packaging and execution
-
-## Database Configuration
-
-### H2 Database Setup
-- **URL**: `jdbc:h2:file:./data/netflix`
-- **Driver**: `org.h2.Driver`
-- **Username/Password**: `sa/sa`
-- **Console**: Enabled at `/h2-console`
-- **DDL Strategy**: `update` (preserves data between restarts)
-
-### JPA Configuration
-- **Dialect**: `org.hibernate.dialect.H2Dialect`
-- **Show SQL**: Disabled in production
-- **Format SQL**: Enabled for debugging
+### Key Dependencies
+- `spring-boot-starter-data-jpa`: Database operations
+- `spring-boot-starter-web`: Web application support
+- `spring-boot-starter-security`: Security features
+- `spring-boot-starter-mail`: Email functionality
+- `h2`: Database engine
+- `lombok`: Development productivity
 
 ## Development Commands
 
 ### Build and Run
 ```bash
-# Clean and compile
-mvn clean compile
+# Build the project
+./mvnw clean compile
+
+# Run the application
+./mvnw spring-boot:run
 
 # Run tests
-mvn test
+./mvnw test
 
-# Package application
-mvn package
-
-# Run application
-mvn spring-boot:run
-
-# Run with specific profile
-mvn spring-boot:run -Dspring-boot.run.profiles=dev
+# Package the application
+./mvnw clean package
 ```
 
-### Database Management
-```bash
-# Access H2 Console
-# Navigate to: http://localhost:8080/h2-console
-# JDBC URL: jdbc:h2:file:./data/netflix
-# Username: sa, Password: sa
-```
+### Maven Wrapper
+- **mvnw** (Unix/Linux/macOS): Maven wrapper script
+- **mvnw.cmd** (Windows): Maven wrapper for Windows
 
-### Development Tools
-- **IDE**: Any Java IDE with Maven support (IntelliJ IDEA, Eclipse, VS Code)
-- **Java Version**: Requires Java 17 or higher
-- **Maven**: Version 3.6+ recommended
+## Application Configuration
+- **Configuration File**: `src/main/resources/application.properties`
+- **Main Class**: `com.avengers.netflix.NetflixApplication`
+- **Package Structure**: `com.avengers.netflix.*`
 
-## Environment Configuration
+## Development Environment
+- **IDE Support**: Compatible with IntelliJ IDEA, Eclipse, VS Code
+- **Lombok Integration**: Requires IDE plugin for annotation processing
+- **Database Console**: H2 console available in development mode
 
-### Application Properties
-- Database connection settings
-- H2 console configuration
-- Email service configuration (Mailtrap)
-- JPA and Hibernate settings
-- Security configurations
+## Security Features
+- Spring Security integration
+- Custom cryptography utilities
+- Token-based authentication
+- Email verification system
 
-### Email Service Setup
-- **Host**: `sandbox.smtp.mailtrap.io`
-- **Port**: `465`
-- **Authentication**: Enabled with SMTP credentials
-- **TLS**: Enabled for secure communication
+## Testing Framework
+- Spring Boot Test starter
+- JUnit integration
+- Test class: `NetflixApplicationTests`
+
+## Deployment Considerations
+- Spring Boot embedded server (Tomcat)
+- Executable JAR packaging
+- H2 database files in data/ directory
+- Java 17 runtime requirement

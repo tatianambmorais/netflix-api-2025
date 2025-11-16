@@ -1,177 +1,167 @@
-# Netflix API 2025 - Development Guidelines
+# Netflix API - Development Guidelines
 
 ## Code Quality Standards
 
 ### Package Structure and Naming
-- **Package Naming**: Follow reverse domain notation: `com.avengers.netflix.*`
-- **Layer Organization**: Separate packages by architectural layer (model, repository, service, view, security, utils)
-- **Class Naming**: Use descriptive PascalCase names (e.g., `UsuarioService`, `NetflixApplication`)
-- **Method Naming**: Use camelCase with descriptive verbs (e.g., `cadastraUsuario`, `confirmaSenha`)
+- **Package Naming**: Use reverse domain notation `com.avengers.netflix.*`
+- **Layer Separation**: Maintain clear separation between layers (model, repository, service, view, security, utils)
+- **Class Naming**: Use descriptive names that clearly indicate purpose (e.g., `UsuarioService`, `TelaConfirmacaoToken`)
+
+### Import Organization
+- **Explicit Imports**: Use specific imports rather than wildcards where possible
+- **Standard Order**: Java standard library imports first, then third-party, then project imports
+- **Grouping**: Group related imports together (e.g., all model imports, all repository imports)
 
 ### Code Formatting Patterns
-- **Indentation**: Use tabs for indentation consistently
-- **Line Breaks**: Windows-style line endings (`\r\n`)
-- **Spacing**: Single space after keywords and around operators
-- **Braces**: Opening brace on same line for methods and classes
-- **Method Parameters**: Long parameter lists broken into multiple lines when needed
-
-### Documentation Standards
-- **Minimal Comments**: Code should be self-documenting through clear naming
-- **Console Output**: Use `System.out.println()` for user feedback and debugging
-- **Error Messages**: Provide clear, user-friendly error messages in Portuguese
+- **Indentation**: Use tabs for indentation consistently across all files
+- **Line Breaks**: Use Windows-style line endings (`\r\n`)
+- **Spacing**: Consistent spacing around operators and method parameters
+- **Braces**: Opening braces on same line for methods and control structures
 
 ## Structural Conventions
 
-### Class Structure Patterns
-- **Entity Classes**: Use Lombok annotations (`@Getter`, `@Setter`) for boilerplate reduction
-- **Service Classes**: Constructor-based dependency injection with `final` fields
-- **Configuration Classes**: Use `@Configuration` and `@Bean` annotations appropriately
-- **Application Class**: Main method with Spring context initialization and console-based UI
+### Constructor Injection Pattern (5/5 files)
+```java
+private final UsuarioRepository usuarioRepository;
+private final EmailService emailService;
 
-### Dependency Injection
-- **Constructor Injection**: Preferred method for required dependencies
-- **Field Declaration**: Use `private final` for injected dependencies
-- **Bean Retrieval**: Use `context.getBean()` for manual bean retrieval in main method
+public UsuarioService(UsuarioRepository usuarioRepository, EmailService emailService) {
+    this.usuarioRepository = usuarioRepository;
+    this.emailService = emailService;
+}
+```
+- **Mandatory**: Use constructor injection for all dependencies
+- **Final Fields**: Mark injected dependencies as `final`
+- **No @Autowired**: Rely on Spring's constructor injection without explicit annotation
 
-### Entity Design
-- **JPA Annotations**: Use Jakarta Persistence API (`jakarta.persistence.*`)
-- **ID Generation**: Use `@GeneratedValue(strategy = GenerationType.IDENTITY)` for auto-increment
-- **Relationships**: Use appropriate JPA relationship annotations (`@OneToMany`, `@ManyToOne`)
-- **Cascade Operations**: Use `CascadeType.ALL` and `orphanRemoval = true` for dependent entities
+### Service Layer Patterns (3/5 files)
+- **@Service Annotation**: All service classes must be annotated with `@Service`
+- **Business Logic Encapsulation**: Keep all business logic within service methods
+- **Repository Delegation**: Services should delegate data access to repositories
+- **Exception Handling**: Use `IllegalArgumentException` for business rule violations
+
+### Method Naming Conventions (5/5 files)
+- **Portuguese Names**: Use Portuguese method names for business operations (`cadastraUsuario`, `confirmaToken`)
+- **Descriptive Verbs**: Start with action verbs (`cadastrar`, `confirmar`, `verificar`, `buscar`)
+- **Camel Case**: Follow camelCase convention consistently
 
 ## Semantic Patterns
 
-### Service Layer Patterns
-- **Method Naming**: Use Portuguese verbs for business operations (`cadastraUsuario`, `confirmaSenha`)
-- **Validation Logic**: Private methods for validation with descriptive names
-- **Error Handling**: Console output for error conditions rather than exceptions
-- **Business Logic**: Encapsulate complex operations in private helper methods
-
-### Security Implementation
-- **Password Handling**: Always hash passwords using utility classes (`CriptografiaUtils.sha256()`)
-- **Token Management**: Use utility classes for token generation (`TokenUtils.generateToken()`)
-- **Security Configuration**: Disable CSRF for development, permit H2 console access
-- **Frame Options**: Disable for H2 console compatibility
-
-### Data Access Patterns
-- **Repository Usage**: Leverage Spring Data JPA method naming conventions
-- **Entity Persistence**: Use repository `save()` method for both create and update operations
-- **Query Methods**: Use method naming conventions like `findByEmail()`
-
-## Frequently Used Code Idioms
-
-### Console-Based UI Pattern
+### Entity Validation Pattern (2/5 files)
 ```java
-Scanner scanner = new Scanner(System.in);
-while(true) {
-    // Menu display
-    System.out.println("=== Application Name ===");
-    // Option handling with string comparison
-    if("1".equals(op)) {
-        // Action
+private void verificaSeJaExiste(String email) {
+    Usuario usuario = usuarioRepository.findByEmail(email);
+    if (usuario != null) {
+        throw new IllegalArgumentException("Usuária(o) já cadastrada(o) com este e-mail.");
     }
 }
 ```
+- **Validation Methods**: Create private validation methods with descriptive names
+- **Early Return**: Validate inputs early and throw exceptions immediately
+- **Portuguese Messages**: Use Portuguese for user-facing error messages
 
-### Service Method Pattern
+### Security Implementation Pattern (3/5 files)
 ```java
-public void businessOperation(parameters) {
-    // Validation
-    validateInput(parameters);
-    
-    // Entity creation/modification
-    Entity entity = new Entity();
-    entity.setProperty(value);
-    
-    // Persistence
-    repository.save(entity);
-    
-    // Additional operations
-    additionalService.performAction(entity);
+String senhaCriptografada = CriptografiaUtils.sha256(senha);
+usuario.setSenhaHash(senhaCriptografada);
+usuario.setToken(TokenUtils.generateToken());
+```
+- **Utility Classes**: Use dedicated utility classes for cryptography and token operations
+- **Hash Storage**: Always store hashed passwords, never plain text
+- **Token Generation**: Generate unique tokens for user verification
+
+### Transaction Management (1/5 files)
+```java
+@Transactional
+public Usuario adicionarOuRemoverFavorito(String email, Long midiaId) {
+    // Method implementation
 }
 ```
+- **@Transactional**: Use for methods that modify multiple entities
+- **Selective Usage**: Apply only to methods requiring transaction boundaries
 
-### Security Configuration Pattern
+## Internal API Usage Patterns
+
+### Repository Pattern Usage (4/5 files)
+```java
+Usuario usuario = usuarioRepository.findByEmail(email);
+usuarioRepository.save(usuario);
+```
+- **Find Methods**: Use custom finder methods (`findByEmail`, `findByTitulo`)
+- **Save Operations**: Always call `save()` after entity modifications
+- **Null Checks**: Always check for null returns from repository methods
+
+### Spring Boot Application Structure (1/5 files)
+```java
+@SpringBootApplication
+public class NetflixApplication {
+    public static void main(String[] args) {
+        ApplicationContext context = SpringApplication.run(NetflixApplication.class, args);
+        // Bean retrieval and application logic
+    }
+}
+```
+- **Bean Retrieval**: Use `context.getBean()` for manual bean access
+- **Static State**: Maintain application state in static variables when needed
+- **Console Interface**: Implement console-based user interaction in main method
+
+### Security Configuration (1/5 files)
 ```java
 @Configuration
 public class Security {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-            .authorizeHttpRequests(auth -> auth.requestMatchers("/path/**").permitAll())
+            .authorizeHttpRequests(auth -> auth.requestMatchers("/h2-console/**").permitAll())
             .csrf(csrf -> csrf.disable())
             .build();
     }
 }
 ```
+- **@Configuration**: Use for security configuration classes
+- **Method Chaining**: Use fluent API for security configuration
+- **H2 Console**: Always permit H2 console access in development
+
+## Frequently Used Code Idioms
+
+### Stream API Usage (1/5 files)
+```java
+List<Midia> filmes = usuario.getFavoritos().stream()
+    .filter(midia -> midia instanceof Filme)
+    .collect(Collectors.toList());
+```
+- **Filtering**: Use `instanceof` checks for type-based filtering
+- **Collection**: Use `Collectors.toList()` for stream collection
+
+### Optional Handling (1/5 files)
+```java
+return filmeRepository.findById(id)
+    .<Midia>map(filme -> filme)
+    .orElseGet(() -> serieRepository.findById(id)
+        .<Midia>map(serie -> serie)
+        .orElseThrow(() -> new IllegalArgumentException("Mídia não encontrada.")));
+```
+- **Chaining**: Chain Optional operations for complex lookups
+- **Exception Throwing**: Use `orElseThrow()` with descriptive messages
 
 ## Popular Annotations
 
-### Spring Framework
-- `@SpringBootApplication`: Main application class
-- `@Service`: Service layer components
-- `@Configuration`: Configuration classes
-- `@Bean`: Bean definition methods
+### Core Spring Annotations (5/5 files)
+- **@Service**: Mark service layer classes
+- **@Component**: Mark view layer classes
+- **@Configuration**: Mark configuration classes
+- **@SpringBootApplication**: Main application class
+- **@Bean**: Factory methods in configuration classes
 
-### JPA/Hibernate
-- `@Entity`: JPA entity classes
-- `@Id`: Primary key fields
-- `@GeneratedValue`: Auto-generated values
-- `@OneToMany`: One-to-many relationships
+### Testing Annotations (1/5 files)
+- **@SpringBootTest**: Integration test configuration
+- **@Test**: JUnit test methods
 
-### Lombok
-- `@Getter`: Generate getter methods
-- `@Setter`: Generate setter methods
+### Transaction Annotations (1/5 files)
+- **@Transactional**: Method-level transaction management
 
-### Testing
-- `@SpringBootTest`: Integration test configuration
-- `@Test`: Test method annotation
-
-## Internal API Usage Patterns
-
-### Repository Pattern
-```java
-// Constructor injection
-private final EntityRepository repository;
-
-// Find operations
-Entity entity = repository.findByProperty(value);
-
-// Save operations
-repository.save(entity);
-```
-
-### Utility Class Usage
-```java
-// Password encryption
-String hashedPassword = CriptografiaUtils.sha256(password);
-
-// Token generation
-String token = TokenUtils.generateToken();
-```
-
-### Spring Context Usage
-```java
-ApplicationContext context = SpringApplication.run(Application.class, args);
-ServiceClass service = context.getBean(ServiceClass.class);
-```
-
-## Best Practices Followed
-
-### Security
-- Always hash passwords before storage
-- Use token-based authentication
-- Disable unnecessary security features for development
-- Separate security configuration into dedicated classes
-
-### Data Management
-- Use JPA relationships appropriately
-- Implement cascade operations for dependent entities
-- Use repository pattern for data access
-- Validate data before persistence
-
-### Application Architecture
-- Maintain clear separation of concerns
-- Use dependency injection consistently
-- Implement console-based user interaction
-- Handle errors gracefully with user feedback
+## Console Output Standards
+- **Portuguese Messages**: All user-facing messages in Portuguese
+- **Formatted Output**: Use consistent formatting for console displays
+- **Error Handling**: Provide clear error messages with context
+- **System.out.println**: Standard output method for console applications

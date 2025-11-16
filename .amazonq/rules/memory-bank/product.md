@@ -1,54 +1,51 @@
-# Netflix API 2025 - Product Overview
+# Netflix API - Product Overview
 
 ## Project Purpose
-A Spring Boot-based Netflix-like streaming platform API that provides comprehensive media management, user authentication, and subscription services. This backend system simulates a streaming service with user registration, media catalog management, and payment processing capabilities.
+A Spring Boot-based Netflix-like streaming platform API that provides comprehensive media management, user authentication, and subscription services. The system enables users to browse, favorite, and manage multimedia content while handling secure user registration, login, and payment processing.
 
 ## Key Features and Capabilities
 
 ### User Management
-- User registration and authentication system
-- Secure login with token-based authentication
-- Email verification and password recovery
-- User profile management with encrypted data storage
+- User registration with email confirmation via token system
+- Secure authentication and authorization with Spring Security
+- User profile management and account verification
+- Role-based access control with TipoUsuario enum
 
 ### Media Management
-- Comprehensive media catalog (Movies and TV Series)
+- Support for multiple media types (Filme, Serie) extending base Midia class
+- Media catalog browsing and search functionality
+- Favorite media management for personalized user experience
 - Media metadata storage and retrieval
-- Content categorization and organization
-- Media upload and management interface
 
-### Payment System
-- Credit card registration and management
-- Secure payment processing
-- Subscription management
-- Card information encryption and security
+### Payment Processing
+- Credit card (Cartao) registration and management
+- Secure payment information handling with encryption utilities
+- Card validation and update capabilities
 
 ### Security Features
-- Spring Security integration
-- Password encryption using cryptographic utilities
 - Token-based authentication system
-- Secure API endpoints with proper authorization
+- Password encryption using custom cryptography utilities
+- Email verification for account activation
+- Secure session management
 
-### Email Services
-- Automated email notifications
-- Account verification emails
-- Password recovery system
-- SMTP integration with Mailtrap for development
+### Communication Services
+- Email service integration for notifications and confirmations
+- Token generation and validation for secure operations
 
 ## Target Users and Use Cases
 
 ### Primary Users
-- **End Users**: Streaming service subscribers who register, manage profiles, and access media content
-- **Content Managers**: Administrators who upload and manage the media catalog
-- **System Administrators**: Technical staff managing user accounts and system operations
+- **End Users**: Individuals seeking streaming media content with personalized recommendations
+- **Content Managers**: Administrators managing media catalog and user accounts
+- **System Administrators**: Technical staff maintaining platform security and performance
 
-### Use Cases
-- User registration and profile management
+### Core Use Cases
+- User registration and account verification
+- Secure login and session management
 - Media browsing and content discovery
-- Subscription and payment management
-- Account security and verification
-- Administrative content management
-- System monitoring and maintenance
+- Personal favorite lists management
+- Payment method registration and updates
+- Account security and token validation
 
 ## Value Proposition
-Provides a complete backend infrastructure for a streaming platform with enterprise-grade security, scalable architecture, and comprehensive user management capabilities. The system demonstrates modern Spring Boot development practices with proper separation of concerns and secure data handling.
+Provides a secure, scalable foundation for streaming media platforms with robust user management, comprehensive media handling, and integrated payment processing, built on enterprise-grade Spring Boot architecture.

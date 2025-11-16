@@ -19,6 +19,11 @@ public class TelaAtualizaCartao {
     }
 
     public void mostrar(Usuario usuarioLogado) {
+        if (usuarioLogado == null) {
+            System.out.println("Você precisa estar logado para atualizar cartões!");
+            return;
+        }
+        
         System.out.println("=== Atualização de Cartão ===");
         
         List<Cartao> cartoes = cartaoService.listarCartoesPorUsuario(usuarioLogado);
