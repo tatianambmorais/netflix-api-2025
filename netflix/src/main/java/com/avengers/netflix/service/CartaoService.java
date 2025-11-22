@@ -3,7 +3,6 @@ package com.avengers.netflix.service;
 import com.avengers.netflix.model.Cartao;
 import com.avengers.netflix.model.Usuario;
 import com.avengers.netflix.repository.CartaoRepository;
-import com.avengers.netflix.utils.CriptografiaUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,11 +20,24 @@ public class CartaoService {
         return cartaoRepository.findByUsuario(usuario);
     }
 
-    public void atualizarCartao(Cartao cartao, String novoNumero, String novoNome, String novaValidade, String novoCvv) {
-        cartao.setNumero(CriptografiaUtils.sha256(novoNumero));
-        cartao.setNomeImpresso(novoNome);
-        cartao.setValidade(novaValidade);
-        cartao.setCvv(CriptografiaUtils.sha256(novoCvv));
+
+    public void atualizarCartao(
+            Usuario logado,
+            Cartao cartao,
+            String numero,
+            String nome,
+            String validade,
+            String cvv
+    ) {
+        if (!pertenceAoUsuario(cartao, logado)) {
+            throw new RuntimeException("Acesso negado!");
+        }
+
+        cartao.setNumero(numero);
+        cartao.setNomeImpresso(nome);
+        cartao.setValidade(validade);
+        cartao.setCvv(cvv);
+
         cartaoRepository.save(cartao);
     }
 
@@ -35,11 +47,15 @@ public class CartaoService {
 
     public void cadastrarCartao(Usuario usuario, String numero, String nomeImpresso, String validade, String cvv) {
         Cartao cartao = new Cartao();
-        cartao.setNumero(CriptografiaUtils.sha256(numero));
+        cartao.setNumero(numero);
         cartao.setNomeImpresso(nomeImpresso);
         cartao.setValidade(validade);
-        cartao.setCvv(CriptografiaUtils.sha256(cvv));
+        cartao.setCvv(cvv);
         cartao.setUsuario(usuario);
         cartaoRepository.save(cartao);
+    }
+
+    public Cartao buscarPorId(Long idCartao) {
+       return  cartaoRepository.findById(idCartao).orElseThrow();
     }
 }
