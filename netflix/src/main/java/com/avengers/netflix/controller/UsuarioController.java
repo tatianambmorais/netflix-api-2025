@@ -32,7 +32,8 @@ public class UsuarioController {
                     dados.validadeCartao(),
                     dados.codSeguranca(),
                     dados.nomeTitular(),
-                    dados.cpfCnpj()
+                    dados.cpfCnpj(),
+                    dados.assinatura()
             );
 
             return "Cliente cadastrado com sucesso! Confirme seu e-mail.";

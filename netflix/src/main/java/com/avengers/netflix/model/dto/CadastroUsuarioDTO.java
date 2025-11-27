@@ -15,5 +15,6 @@ public record CadastroUsuarioDTO(
         String numeroCartao,
         String validadeCartao,
         String codSeguranca,
-        String nomeTitular
+        String nomeTitular,
+        String assinatura
 ) {}

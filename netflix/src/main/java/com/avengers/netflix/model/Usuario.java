@@ -25,6 +25,8 @@ public class Usuario {
     private boolean confirmado;
     private String token;
     private TipoUsuario tipoUsuario;
+    @OneToOne
+    private Assinatura assinatura;
     @Column(nullable = true)
     private String numeroCartao;
     @Column(nullable = true)

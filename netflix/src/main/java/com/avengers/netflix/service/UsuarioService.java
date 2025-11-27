@@ -23,18 +23,20 @@ public class UsuarioService {
     private final EmailService emailService;
     private final CartaoRepository cartaoRepository;
     private final MidiaService midiaService;
+    private final AssinaturaService assinaturaService;
 
     public UsuarioService(UsuarioRepository usuarioRepository, EmailService emailService,
-                          CartaoRepository cartaoRepository, MidiaService midiaService) {
+                          CartaoRepository cartaoRepository, MidiaService midiaService, AssinaturaService assinaturaService) {
         this.usuarioRepository = usuarioRepository;
         this.emailService = emailService;
         this.cartaoRepository = cartaoRepository;
         this.midiaService = midiaService;
+        this.assinaturaService = assinaturaService;
     }
 
     public void cadastraUsuario(String nome, String dataNascimentoStr, String email, String senha,
                                 String confirmaSenha, String numeroCartao, String validadeCartao,
-                                String codSeguranca, String nomeTitular, String cpfCnpj) {
+                                String codSeguranca, String nomeTitular, String cpfCnpj, String assinatura) {
 
         verificaSeJaExiste(email);
 
@@ -50,6 +52,7 @@ public class UsuarioService {
         usuario.setCodigoSeguranca(codSeguranca);
         usuario.setNomeTitular(nomeTitular);
         usuario.setTipoUsuario(TipoUsuario.CLIENTE);
+        usuario.setAssinatura(assinaturaService.findByNome(assinatura));
 
         usuarioRepository.save(usuario);
 
