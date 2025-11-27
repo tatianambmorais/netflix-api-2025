@@ -7,9 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
+@Repository
 public interface MidiaRepository extends JpaRepository<Midia, Long>, JpaSpecificationExecutor<Midia> {
     // 1. Ordenar conteudo por titulo (asc)
     // Serve para Filme e Serie
@@ -26,11 +27,11 @@ public interface MidiaRepository extends JpaRepository<Midia, Long>, JpaSpecific
     List<Midia> findTopMidias(Pageable pageable);
 
     // 4. Listar conteúdos lançados após ano X
-    @Query("SELECT m FROM Midia m WHERE m.anoLancamento > :ano")
+    @Query("SELECT m FROM Midia m WHERE m.ano > :ano")
     List<Midia> findLancadosApos(@Param("ano") int ano);
 
     // 7. Listar conteúdos com trailer_url não nulo
-    @Query("SELECT m FROM Midia m WHERE m.trailerUrl IS NOT NULL")
+    @Query("SELECT m FROM Midia m WHERE m.trailer IS NOT NULL")
     List<Midia> findComTrailer();
 
     // 8. Buscar por palavra-chave no título/sinopse

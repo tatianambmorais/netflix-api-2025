@@ -131,7 +131,7 @@ public class MidiaService {
                 midia.getSinopse(),
                 duracao,
                 midia.getAno(),
-                midia.getTrailerUrl()
+                midia.getTrailer()
         );
     }
 }
