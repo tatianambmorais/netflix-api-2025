@@ -27,18 +27,18 @@ public interface MidiaRepository extends JpaRepository<Midia, Long>, JpaSpecific
     List<Midia> findTopMidias(Pageable pageable);
 
     // 4. Listar conteúdos lançados após ano X
-    @Query("SELECT m FROM Midia m WHERE m.ano > :ano")
-    List<Midia> findLancadosApos(@Param("ano") int ano);
+    @Query("SELECT m FROM Midia m WHERE m.ano = :ano")
+    List<Midia> findLancadosEm(@Param("ano") int ano);
 
     // 7. Listar conteúdos com trailer_url não nulo
     @Query("SELECT m FROM Midia m WHERE m.trailer IS NOT NULL")
     List<Midia> findComTrailer();
 
     // 8. Buscar por palavra-chave no título/sinopse
-    @Query("SELECT m FROM Midia m WHERE LOWER(m.titulo) LIKE LOWER(CONCAT('%', :termo, '%')) " +
-            "OR LOWER(m.sinopse) LIKE LOWER(CONCAT('%', :termo, '%')) " +
+    @Query("SELECT m FROM Midia m WHERE LOWER(m.titulo) LIKE LOWER(CONCAT('%', :palavraChave, '%')) " +
+            "OR LOWER(m.sinopse) LIKE LOWER(CONCAT('%', :palavraChave, '%')) " +
             "ORDER BY m.relevancia DESC")
-    List<Midia> searchByTermo(@Param("termo") String termo);
+    List<Midia> searchByPalavraChave(@Param("palavraChave") String palavraChave);
 
 }
 
