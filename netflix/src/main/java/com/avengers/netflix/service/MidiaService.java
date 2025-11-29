@@ -98,7 +98,7 @@ public class MidiaService {
 
     // Item 4: Lançados após ano X
     public List<MidiaDTO> buscarLancamentosRecentes(int ano) {
-        return converterLista(midiaRepository.findLancadosApos(ano));
+        return converterLista(midiaRepository.findLancadosEm(ano));
     }
 
     // Item 7: Apenas com Trailer
@@ -107,8 +107,8 @@ public class MidiaService {
     }
 
     // Item 8: Busca por palavra-chave
-    public List<MidiaDTO> buscarPorTermo(String termo) {
-        return converterLista(midiaRepository.searchByTermo(termo));
+    public List<MidiaDTO> buscarPorPalavraChave(String palavraChave) {
+        return converterLista(midiaRepository.searchByPalavraChave(palavraChave));
     }
 
     // --- Metodo Auxiliar de Conversão ---

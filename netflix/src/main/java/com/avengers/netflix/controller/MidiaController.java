@@ -70,7 +70,7 @@ public class MidiaController {
     }
 
     @GetMapping("/busca")
-    public ResponseEntity<List<MidiaDTO>> buscarPorTermo(@RequestParam String termo) {
-        return ResponseEntity.ok(midiaService.buscarPorTermo(termo));
+    public ResponseEntity<List<MidiaDTO>> buscarPorPalavraChave(@RequestParam String palavraChave) {
+        return ResponseEntity.ok(midiaService.buscarPorPalavraChave(palavraChave));
     }
 }
